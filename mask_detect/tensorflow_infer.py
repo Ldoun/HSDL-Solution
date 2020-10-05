@@ -32,11 +32,13 @@ id2class = {0: 'Mask', 1: 'NoMask'}
 
 def inference(image,
               people_count,
+              people_file,
+              names,
               conf_thresh=0.5,
-              iou_thresh=0.4,
-              target_shape=(160, 160),
+              iou_thresh=0.5,
+              target_shape=(260, 260),
               draw_result=True,
-              show_result=True
+              show_result=False
               ):
 
     '''
@@ -49,10 +51,11 @@ def inference(image,
     :param show_result: whether to display the image.
     :return:
     '''
-    people=["이도운","이도현"]
+    people=names
     name=""
     # image = np.copy(image)
     output_info = []
+   
     height, width, _ = image.shape
     image_resized = cv2.resize(image, target_shape)
     image_np = image_resized / 255.0  # 归一化到0~1
@@ -85,26 +88,27 @@ def inference(image,
         ymax = min(int(bbox[3] * height), height)
 
         if draw_result:
+            loded_pic=[]
             if class_id == 0:
                 color = (0, 255, 0)
             else:
                 color = (255, 0, 0)
                 if people_count!=len(keep_idxs):
                     people_count=len(keep_idxs)
-                    picture_of_me = face_recognition.load_image_file("C:/Users/Lee/Desktop/a/Lee.jpg")
-                    picture_Ldh  =face_recognition.load_image_file("C:/Users/Lee/Desktop/a/Ldh.jpg")
+                    for p in people_file:
+                        temp=face_recognition.load_image_file(p)
+                        loded_pic.append(face_recognition.face_encodings(temp)[0])
 
                     #face_encodings 여러개 되는지 체크하기
-                    my_face_encoding = face_recognition.face_encodings(picture_of_me)[0]
-                    Ldh_face_encoding=face_recognition.face_encodings(picture_Ldh)[0]
-
-                    
+    
 
                     unknown_face_encoding = face_recognition.face_encodings(image[:,:  ,::-1],known_face_locations=[(ymin,xmax,ymax,xmin)])[0]
-                    results = face_recognition.compare_faces([my_face_encoding,Ldh_face_encoding], unknown_face_encoding)
+                    results = face_recognition.compare_faces(loded_pic, unknown_face_encoding)
+                    #print("len"+str(len(loded_pic)))
                     for x,compare in enumerate(results):
                         if compare==True :
                             name=people[x]
+                            break
                     
                 
            
@@ -113,14 +117,11 @@ def inference(image,
                 cv2.imshow('image', image[ymin:ymax,xmin:xmax  ,::-1])
             except:
                 continue'''
-            cv2.putText(image, "%s: %.2f" % (id2class[class_id], conf), (xmin + 2, ymin - 2),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
+            cv2.putText(image, "%s: %.2f" % (id2class[class_id], conf), (xmin + 2, ymin - 2),cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
         output_info.append([class_id, conf, xmin, ymin, xmax, ymax,name])
-
     if show_result:
         Image.fromarray(image).show()
     return output_info
-
 
 def run_on_video(video_path, output_video_name, conf_thresh):
     cap = cv2.VideoCapture(video_path)

@@ -66,6 +66,20 @@ class Camera(object):
         #self.video_path="C:/workspace/Dangook_c/otter_out.mp4"
         self.video_path="C:/Users/Lee/Desktop/a/dd.mp4"
         self.frames=[]
+        self.peopleImageFolder="C:/Users/Lee/Desktop/a/people/"
+        people=os.listdir(self.peopleImageFolder)
+
+        
+        name=[]
+        for p in people:
+
+            name.append(p[:-4])
+
+        people=[self.peopleImageFolder+i for i in people]
+        count={}
+        for i in name:
+            count[i]=0
+        print(people)
         people_count=0
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         conf_thresh=0.5
@@ -90,16 +104,15 @@ class Camera(object):
                 break
             read_frame_stamp = time.time()
             if (status):
-                outinfo=inference(img_raw,people_count,conf_thresh,iou_thresh=0.5,target_shape=(260, 260),draw_result=True,show_result=False)
-                print(len(outinfo))
+                outinfo=inference(img_raw,people_count,people,name)
+                #print(len(outinfo))
                 people_count=len(outinfo)
                 for info in outinfo:
-                    
-                    if info[-1]=="이도운":
-                        lee+=1
-                    elif info[-1]=="이도현":
-                        ldh+=1
-                    
+                    print(info)
+                    if(info[-1]!=''):
+                        count[info[-1]]=count[info[-1]]+1
+
+                
                 #out.write(img_raw[:, :, ::-1])
                 self.frames.append(cv2.imencode('.jpg', img_raw[:, :, ::-1])[1].tobytes())
                 cv2.waitKey(1)
@@ -110,8 +123,12 @@ class Camera(object):
                 print("%d of %d" % (idx, total_frames))
                 print("read_frame:%f, infer time:%f, write time:%f" % (read_frame_stamp - start_stamp,
                                                                     inference_stamp - read_frame_stamp,
-                                                                    write_frame_stamp - inference_stamp))
-        print("Lee:"+str(lee)+"Ldh:"+str(ldh))
+                                                                    write_frame_stamp - inference_stamp))                
+        for i in count.keys():
+            if(count[i]>0):
+                print(i,end=" ")
+
+        print('-----------------------------------------------------------------')
 
     def get_frame(self):  
         len(self.frames)           
