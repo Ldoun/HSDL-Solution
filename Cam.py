@@ -64,7 +64,7 @@ class Camera(object):
         lee=0
         ldh=0
         #self.video_path="C:/workspace/Dangook_c/otter_out.mp4"
-        self.video_path="C:/Users/Lee/Desktop/a/dd.mp4"
+        self.video_path="C:/Users/Lee/Desktop/a/school_lunch.mp4"
         self.frames=[]
         self.peopleImageFolder="C:/Users/Lee/Desktop/a/people/"
         people=os.listdir(self.peopleImageFolder)
