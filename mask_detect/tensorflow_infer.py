@@ -13,7 +13,7 @@ from utils.nms import single_class_non_max_suppression
 from load_model.tensorflow_loader import load_tf_model, tf_inference
 
 #aws 여기 수정
-sess, graph = load_tf_model('C:/Users/Lee/Documents/GitHub/FaceMaskDetection/models/face_mask_detection.pb')
+sess, graph = load_tf_model('models/face_mask_detection.pb')
 # anchor configuration
 feature_map_sizes = [[33, 33], [17, 17], [9, 9], [5, 5], [3, 3]]
 anchor_sizes = [[0.04, 0.056], [0.08, 0.11], [0.16, 0.22], [0.32, 0.45], [0.64, 0.72]]
@@ -31,9 +31,6 @@ id2class = {0: 'Mask', 1: 'NoMask'}
 
 
 def inference(image,
-              people_count,
-              people_file,
-              names,
               conf_thresh=0.5,
               iou_thresh=0.5,
               target_shape=(260, 260),
@@ -51,11 +48,12 @@ def inference(image,
     :param show_result: whether to display the image.
     :return:
     '''
+    '''
     people=names
     name=""
     # image = np.copy(image)
-    output_info = []
-   
+    output_info = []'''
+
     height, width, _ = image.shape
     image_resized = cv2.resize(image, target_shape)
     image_np = image_resized / 255.0  # 归一化到0~1
@@ -93,7 +91,7 @@ def inference(image,
                 color = (0, 255, 0)
             else:
                 color = (255, 0, 0)
-                if people_count!=len(keep_idxs):
+            '''    if people_count!=len(keep_idxs):
                     people_count=len(keep_idxs)
                     for p in people_file:
                         temp=face_recognition.load_image_file(p)
@@ -108,7 +106,7 @@ def inference(image,
                     for x,compare in enumerate(results):
                         if compare==True :
                             name=people[x]
-                            break
+                            break'''
                     
                 
            
@@ -118,10 +116,10 @@ def inference(image,
             except:
                 continue'''
             cv2.putText(image, "%s: %.2f" % (id2class[class_id], conf), (xmin + 2, ymin - 2),cv2.FONT_HERSHEY_SIMPLEX, 0.8, color)
-        output_info.append([class_id, conf, xmin, ymin, xmax, ymax,name])
+    #output_info.append([class_id, conf, xmin, ymin, xmax, ymax,name])
     if show_result:
         Image.fromarray(image).show()
-    return output_info
+    return
 
 def run_on_video(video_path, output_video_name, conf_thresh):
     cap = cv2.VideoCapture(video_path)

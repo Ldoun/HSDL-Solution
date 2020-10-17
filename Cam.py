@@ -2,7 +2,7 @@ import sys
 import cv2
 import os
 import time
-sys.path.append('C:/Users/Lee/Documents/GitHub/HSDL-Solution/mask_detect/')
+sys.path.append('/home/pi/HSDL-Solution/mask_detect/')
 from tensorflow_infer import inference
 
 #BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -64,13 +64,13 @@ class Camera(object):
         lee=0
         ldh=0
         #self.video_path="C:/workspace/Dangook_c/otter_out.mp4"
-        self.video_path="C:/Users/Lee/Desktop/a/school_lunch.mp4"
+        self.video_path="/home/pi/HSDL-Solution/test_video_a.mp4"
         self.frames=[]
-        self.peopleImageFolder="C:/Users/Lee/Desktop/a/people/"
-        people=os.listdir(self.peopleImageFolder)
+        #self.peopleImageFolder="C:/Users/Lee/Desktop/a/people/"
+        #people=os.listdir(self.peopleImageFolder)
 
         
-        name=[]
+        '''name=[]
         for p in people:
 
             name.append(p[:-4])
@@ -80,7 +80,7 @@ class Camera(object):
         for i in name:
             count[i]=0
         print(people)
-        people_count=0
+        people_count=0'''
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         conf_thresh=0.5
         cap = cv2.VideoCapture(self.video_path)
@@ -104,14 +104,13 @@ class Camera(object):
                 break
             read_frame_stamp = time.time()
             if (status):
-                outinfo=inference(img_raw,people_count,people,name)
+                inference(img_raw)
                 #print(len(outinfo))
-                people_count=len(outinfo)
+                '''people_count=len(outinfo)
                 for info in outinfo:
                     print(info)
                     if(info[-1]!=''):
-                        count[info[-1]]=count[info[-1]]+1
-
+                        count[info[-1]]=count[info[-1]]+1'''
                 
                 #out.write(img_raw[:, :, ::-1])
                 self.frames.append(cv2.imencode('.jpg', img_raw[:, :, ::-1])[1].tobytes())
@@ -124,9 +123,9 @@ class Camera(object):
                 print("read_frame:%f, infer time:%f, write time:%f" % (read_frame_stamp - start_stamp,
                                                                     inference_stamp - read_frame_stamp,
                                                                     write_frame_stamp - inference_stamp))                
-        for i in count.keys():
+        '''for i in count.keys():
             if(count[i]>0):
-                print(i,end=" ")
+                print(i,end=" ")'''
 
         print('-----------------------------------------------------------------')
 
