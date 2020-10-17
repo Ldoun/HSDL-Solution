@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import cv2
 import time
-import face_recognition
+#import face_recognition
 import argparse
 
 import numpy as np
@@ -13,7 +13,7 @@ from utils.nms import single_class_non_max_suppression
 from load_model.tensorflow_loader import load_tf_model, tf_inference
 
 #aws 여기 수정
-sess, graph = load_tf_model('models/face_mask_detection.pb')
+sess, graph = load_tf_model('/home/pi/HSDL-Solution/mask_detect/models/face_mask_detection.pb')
 # anchor configuration
 feature_map_sizes = [[33, 33], [17, 17], [9, 9], [5, 5], [3, 3]]
 anchor_sizes = [[0.04, 0.056], [0.08, 0.11], [0.16, 0.22], [0.32, 0.45], [0.64, 0.72]]
